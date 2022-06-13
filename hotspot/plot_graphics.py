@@ -3,17 +3,14 @@ import matplotlib.pyplot as plt
 
 def main():
 
-    simplex_modified_mpi_50000 = [1.514, 1.585, 1.595]
-    simplex_modified_mpi_100000 = [1.936, 2.115, 2.146]
-    simplex_modified_mpi_1000000 = [1.834, 2.16, 2.151]
+    test = ["32x32/8192", "256x256/8192", "1024x1024/4096", "1024x1024/8192", "1024x1024/16384", "1024x1024/32768"]
+    hotspot = [1.281690141, 16.07084469, 21.33158813, 21.0401659, 21.81525183, 20.83893718]
 
-    plt.plot(num_of_threads, simplex_modified_mpi_50000)
-    plt.plot(num_of_threads, simplex_modified_mpi_100000)
-    plt.plot(num_of_threads, simplex_modified_mpi_1000000)
-    plt.xlabel("Broj niti")
+    plt.plot(test, hotspot)
+    plt.title("Ubrzanje aplikacije")
+    plt.xlabel("Test primer")
     plt.ylabel("Ubrzanje")
-    plt.legend(["50000 iterations", "100000 iterations", "1000000 iterations"], loc="best")
-    plt.savefig("simplex_modified.png", dpi = 90)
+    plt.savefig("./hotspot.png", dpi = 90)
     plt.show()
 
 
