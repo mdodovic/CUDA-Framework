@@ -3,21 +3,22 @@ import matplotlib.pyplot as plt
 
 def main():
 
-    num_of_threads = [2, 4, 8]
+    test = ["30x30/1000", "500x500/10", "1000x1000/100", "1000x1000/1000"]
+    gameoflife_total = [5.5, 32.4, 111.6226415, 169.6081871]
+    gameoflife_evolve = [4.833333333, 153.0744681, 169.9098837, 167.9005848]
 
-    gameoflife_mpi_30_30_1000 = [1.514, 1.585, 1.595]
-    gameoflife_mpi_500_500_10 = [1.936, 2.115, 2.146]
-    gameoflife_mpi_1000_1000_100 = [1.834, 2.16, 2.151]
-    gameoflife_mpi_1000_1000_1000 = [1.834, 2.16, 2.151]
-
-    plt.plot(num_of_threads, gameoflife_mpi_30_30_1000)
-    plt.plot(num_of_threads, gameoflife_mpi_500_500_10)
-    plt.plot(num_of_threads, gameoflife_mpi_1000_1000_100)
-    plt.plot(num_of_threads, gameoflife_mpi_1000_1000_1000)
-    plt.xlabel("Broj niti")
+    plt.plot(test, gameoflife_total)
+    plt.title("Ubrzanje izvrsavanja cele aplikacije")
+    plt.xlabel("Test primer")
     plt.ylabel("Ubrzanje")
-    plt.legend(["30x30/1000", "500x500/10", "1000x1000/100", "1000x1000/1000"], loc="best")
-    plt.savefig("./game_of_life.png", dpi = 90)
+    plt.savefig("./game_of_life_total.png", dpi = 90)
+    plt.show()
+
+    plt.plot(test, gameoflife_evolve)
+    plt.title("Ubrzanje funkcije evolve()")
+    plt.xlabel("Test primer")
+    plt.ylabel("Ubrzanje")
+    plt.savefig("./game_of_life_evolve.png", dpi = 90)
     plt.show()
 
 
