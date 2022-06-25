@@ -25,8 +25,6 @@ __global__ void evolve_parallel(unsigned *univ, unsigned *new_arr, int w, int h)
     if (univ[y*w + x]) n--;
     new_arr[y*w + x] = (n == 3 || (n == 2 && univ[y*w + x]));
 
-    __syncthreads();
-
 }
 
 void evolve(unsigned *univ, int w, int h) {
@@ -78,6 +76,9 @@ void game(unsigned *u, int w, int h, int iter) {
         }
 
         evolve_parallel<<<grid_size, block_size>>>(current_matrix, next_matrix, w, h);
+
+        cudaDeviceSynchronize();
+
         unsigned* tmp_matrix = current_matrix;
         current_matrix = next_matrix;
         next_matrix = tmp_matrix;
