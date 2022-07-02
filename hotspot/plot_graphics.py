@@ -10,6 +10,7 @@ def main():
     plt.title("Ubrzanje aplikacije")
     plt.xlabel("Test primer")
     plt.ylabel("Ubrzanje")
+    plt.xticks(rotation=-45)
     plt.savefig("./hotspot.png", dpi = 90)
     plt.show()
 
