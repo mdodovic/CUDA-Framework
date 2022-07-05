@@ -107,6 +107,8 @@ void compute_tran_temp(float *result, int num_iterations, float *temp, float *po
 
         single_iteration_parallel<<<grid_size, block_size>>>(r, t, p, row, col, Cap_1, Rx_1, Ry_1, Rz_1, step);
 
+        cudaDeviceSynchronize();
+
         float *tmp = t;
         t = r;
         r = tmp;
