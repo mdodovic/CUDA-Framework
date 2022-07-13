@@ -287,7 +287,9 @@ void simplex_unit_to_general_parallel(int m, int n, double tt[], double ref[], d
     cudaMemcpy(device_tt, tt, 20 * 21 * sizeof(double), cudaMemcpyHostToDevice);
 
     simplex_unit_to_general_device<<< dimGrid , dimBlock >>>(device_tt, device_ref, device_phy, m, n);
-
+    
+    // implicit synchronization point
+    
     cudaMemcpy(phy, device_phy, m*n*sizeof(double), cudaMemcpyDeviceToHost);
 
     cudaFree(device_tt); 
@@ -296,6 +298,20 @@ void simplex_unit_to_general_parallel(int m, int n, double tt[], double ref[], d
     
 }
 
+void final_calculation(double* result, int expsz, int m, int n, int* e, int* exps, double* x, double* t) {
+    
+    double *value;
+    for (int j = 0; j < expsz; j++) {
+        for (int i = 0; i < m; i++) {
+            e[i] = exps[i + j * m];
+        }
+        value = monomial_value(m, n, e, x);
+        result[j] = simplex_volume(m, t) * vec_sum(n, value) / (double)(n);
+
+        free(value);
+    }
+
+}
 
 void run(int iter) {
     const int m = 20;
@@ -333,13 +349,13 @@ void run(int iter) {
                          5.0, 0.0, 0.0, 2.0, 3.0, 7.0, 0.0, 3.0, 0.0, 0.0, 4.0, 5.0, 4.0, 8.0, 0.0, 0.0, 8.0, 7.0, 1.0, 0.0, 7.0, 7.0, 0.0, 0.0, 8.0, 0.0, 7.0, 0.0, 0.0, 0.0,
                          3.0, 8.0, 0.0, 0.0, 0.0, 5.0, 0.0, 0.0, 6.0, 6.0, 6.0, 0.0, 3.0, 8.0, 0.0, 0.0, 3.0, 0.0, 0.0, 5.0, 0.0, 3.0, 1.0, 0.0, 0.0, 1.0, 2.0, 2.0, 0.0, 4.0,
                          3.0, 2.0, 3.0, 0.0, 0.0, 0.0, 7.0, 8.0, 0.0, 0.0, 6.0, 1.0, 6.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 1.0, 4.0, 4.0, 1.0, 2.0, 0.0, 0.0, 0.0, 0.0, 2.0, 0.0};
-    double *value;
+    
     double *x;
 
     int seed = 123;
-
-    int n = 1;
     double result[40] = {0};
+    int n = 1;
+    
     while (n * 2 <= iter) {
         x = simplex_sample(m, n, t, &seed);
 
@@ -349,15 +365,7 @@ void run(int iter) {
 
     x = simplex_sample(m, n, t, &seed);
 
-    for (int j = 0; j < expsz; j++) {
-        for (int i = 0; i < m; i++) {
-            e[i] = exps[i + j * m];
-        }
-        value = monomial_value(m, n, e, x);
-        result[j] = simplex_volume(m, t) * vec_sum(n, value) / (double)(n);
-
-        free(value);
-    }
+    final_calculation(result, expsz, m, n, e, exps, x, t);
 
     free(x);
 
